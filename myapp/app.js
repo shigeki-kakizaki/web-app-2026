@@ -64,6 +64,6 @@ app.use((req, res) => {
     res.status(404).send('ページが見つかりません');
 });
 
-app.listen(3000, () => {
-    console.log("サーバが起動しました： http://localhost:3000}");
+app.listen(process.env.PORT || 3000, () => {
+    console.log(`サーバが起動しました： http://localhost:${process.env.PORT || 3000}`);
 });
