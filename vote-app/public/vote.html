@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>投票アプリ</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    h1 { color: #333; }
+    .question { background: #f5f5f5; border-radius: 8px; padding: 20px; margin: 20px 0; }
+    h2 { margin-top: 0; }
+    button {
+      display: block; width: 100%; padding: 12px; margin: 8px 0;
+      background: #0d7377; color: white;
+      border: none; border-radius: 6px; font-size: 16px; cursor: pointer; text-align: left;
+    }
+    button:hover { background: #0a5f62; }
+  </style>
+</head>
+<body>
+  <h1>投票アプリ</h1>
+  <div id="questions"></div>
+
+  <script>
+    async function loadQuestions() {
+      const res = await fetch('/api/questions');
+      const questions = await res.json();
+      const container = document.getElementById('questions');
+      container.innerHTML = '';
+      for (const q of questions) {
+        const section = document.createElement('div');
+        section.className = 'question';
+        section.innerHTML = `<h2>${q.question_text}</h2>`;
+        for (const a of q.answers) {
+          const btn = document.createElement('button');
+          btn.textContent = `${a.answer_text}　（${a.vote_count}票）`;
+          btn.onclick = () => vote(a.id);
+          section.appendChild(btn);
+        }
+        container.appendChild(section);
+      }
+    }
+
+    async function vote(answerId) {
+      await fetch(`/api/votes/${answerId}`, { method: 'POST' });
+      loadQuestions();
+    }
+
+    loadQuestions();
+  </script>
+</body>
+</html>
