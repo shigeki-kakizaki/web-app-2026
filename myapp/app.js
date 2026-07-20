@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const app = express();
 app.use(express.json());
 app.use(express.static('public'));
+app.use(express.static("frontend/dist"));
 
 const pool = new Pool ({
     host:       process.env.DB_HOST,
@@ -60,9 +61,6 @@ app.post('/api/messages', async (req, res) => {
     res.json(result.rows[0]);
 });
 
-app.use((req, res) => {
-    res.status(404).send('ページが見つかりません');
-});
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`サーバが起動しました： http://localhost:${process.env.PORT || 3000}`);
